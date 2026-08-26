@@ -1,0 +1,409 @@
+/* ===========================================================
+   Global reset & base
+=========================================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: radial-gradient(circle at top, #2b2545 0%, #14121f 65%, #0b0a13 100%);
+  color: #f1eefb;
+  min-height: 100vh;
+}
+
+/* ===========================================================
+   App shell
+=========================================================== */
+.app-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.app-header {
+  text-align: center;
+}
+
+.app-header h1 {
+  font-size: 2rem;
+  letter-spacing: 1px;
+  background: linear-gradient(90deg, #ffd27a, #ff9f68, #ff6f9c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 800;
+}
+
+.subtitle {
+  color: #b9b3d6;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+/* ===========================================================
+   Player tags
+=========================================================== */
+.player-tags {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.player-input {
+  flex: 1;
+  text-align: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.06);
+  color: #f1eefb;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.25s ease;
+}
+
+.player-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.player-input.active {
+  border-color: #ffd27a;
+  box-shadow: 0 0 14px rgba(255, 210, 122, 0.45);
+}
+
+.player-w.active {
+  border-color: #9fd4ff;
+  box-shadow: 0 0 14px rgba(159, 212, 255, 0.45);
+}
+
+.vs {
+  color: #83799e;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* ===========================================================
+   Status banner
+=========================================================== */
+.status-banner {
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: all 0.25s ease;
+}
+
+.status-check {
+  background: rgba(255, 99, 99, 0.18);
+  border-color: rgba(255, 99, 99, 0.55);
+  color: #ffb3b3;
+}
+
+.status-over {
+  background: linear-gradient(90deg, #ffd27a, #ff9f68);
+  color: #241a0d;
+  box-shadow: 0 0 22px rgba(255, 159, 104, 0.5);
+}
+
+/* ===========================================================
+   Game area layout
+=========================================================== */
+.game-area {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.board-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ===========================================================
+   Captured pieces row
+=========================================================== */
+.captured-row {
+  min-height: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  width: min(92vw, 480px);
+  padding: 0 4px;
+}
+
+.captured-piece {
+  font-size: 1.2rem;
+  opacity: 0.85;
+}
+
+/* ===========================================================
+   Board
+=========================================================== */
+.board {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  width: min(92vw, 480px);
+  height: min(92vw, 480px);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55), 0 0 0 6px #1c1830, 0 0 0 8px #3a2f5c;
+}
+
+.square {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease;
+}
+
+.square.light {
+  background-color: #f0d9b5;
+}
+
+.square.dark {
+  background-color: #7c5a3a;
+}
+
+.square.selected {
+  background-color: #6fbf73 !important;
+}
+
+.square.last-move {
+  box-shadow: inset 0 0 0 999px rgba(255, 224, 102, 0.35);
+}
+
+.square.king-check {
+  box-shadow: inset 0 0 0 999px rgba(255, 0, 0, 0.45);
+}
+
+.square.target-capture::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 4px solid rgba(255, 60, 60, 0.75);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.target-dot {
+  width: 24%;
+  height: 24%;
+  border-radius: 50%;
+  background: rgba(20, 20, 20, 0.35);
+  pointer-events: none;
+}
+
+.piece {
+  font-size: clamp(22px, 6vw, 42px);
+  line-height: 1;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.35));
+}
+
+.white-piece {
+  color: #fdfdfd;
+  -webkit-text-stroke: 1px #2b2b2b;
+}
+
+.black-piece {
+  color: #1b1b1b;
+}
+
+.coord {
+  position: absolute;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.rank-label {
+  top: 3px;
+  left: 4px;
+}
+
+.file-label {
+  bottom: 2px;
+  right: 4px;
+}
+
+/* ===========================================================
+   Promotion overlay
+=========================================================== */
+.promotion-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 8, 20, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.promotion-box {
+  background: #1f1a33;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  padding: 18px 20px;
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+.promotion-box p {
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #f1eefb;
+}
+
+.promotion-options {
+  display: flex;
+  gap: 8px;
+}
+
+.promotion-btn {
+  font-size: 1.6rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  border: none;
+  background: #f0d9b5;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.promotion-btn:hover {
+  transform: scale(1.1);
+  background: #ffe6b8;
+}
+
+/* ===========================================================
+   Controls
+=========================================================== */
+.controls {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.btn {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #ff9f68, #ff6f9c);
+  color: #201325;
+  box-shadow: 0 6px 18px rgba(255, 111, 156, 0.35);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #f1eefb;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.btn:not(:disabled):hover {
+  transform: translateY(-2px);
+}
+
+/* ===========================================================
+   History panel
+=========================================================== */
+.history-panel {
+  width: min(92vw, 260px);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 14px;
+  max-height: 480px;
+  display: flex;
+  flex-direction: column;
+}
+
+.history-panel h2 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: #ffd27a;
+}
+
+.history-list {
+  overflow-y: auto;
+}
+
+.empty-history {
+  color: #83799e;
+  font-size: 0.85rem;
+}
+
+.history-row {
+  display: grid;
+  grid-template-columns: 28px 1fr 1fr;
+  gap: 6px;
+  padding: 4px 2px;
+  font-size: 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.move-number {
+  color: #83799e;
+}
+
+/* ===========================================================
+   Footer
+=========================================================== */
+.app-footer {
+  color: #6c6488;
+  font-size: 0.75rem;
+  margin-top: 10px;
+}
+
+/* ===========================================================
+   Responsive: mobile
+=========================================================== */
+@media (max-width: 640px) {
+  .game-area {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .history-panel {
+    width: min(92vw, 480px);
+    max-height: 220px;
+  }
+
+  .app-header h1 {
+    font-size: 1.5rem;
+  }
+}

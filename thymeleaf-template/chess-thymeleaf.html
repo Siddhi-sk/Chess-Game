@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title th:text="${pageTitle} ?: 'Two Player Chess'">Two Player Chess</title>
+
+    <!--
+      This page assumes the Vite build output (dist/chess-app.js and
+      dist/chess-app.css) has been copied into your server's static
+      resources folder under a "chess" path, e.g.:
+
+        Spring Boot:  src/main/resources/static/chess/chess-app.js
+                      src/main/resources/static/chess/chess-app.css
+
+        Xsemble/Tomcat: webapp/chess/chess-app.js
+                        webapp/chess/chess-app.css
+
+      th:href / th:src below resolve relative to the app's context root,
+      so they work whether the app is deployed at "/" or under a
+      sub-path (e.g. "/xsemble-portal/chess/...").
+    -->
+    <link rel="stylesheet" th:href="@{/chess/chess-app.css}" />
+</head>
+<body>
+
+    <!-- Optional Thymeleaf-rendered content around the game, e.g. from your existing layout -->
+    <div th:fragment="chessGamePage">
+        <div id="root"></div>
+    </div>
+
+    <script type="module" th:src="@{/chess/chess-app.js}"></script>
+</body>
+</html>
